@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Upload PDFs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .nav {
+            margin-bottom: 20px;
+        }
+        .nav a {
+            margin-right: 12px;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: bold;
+        }
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f3f4f6;
+            border-radius: 8px;
+        }
+        .status {
+            margin-top: 15px;
+            padding: 12px;
+            background: #eef6ff;
+            border-radius: 8px;
+        }
+        button {
+            margin-top: 12px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="nav">
+    <a href="/upload">Upload</a>
+    <a href="/chat">Chat</a>
+</div>
+
+<h1>Upload PDF Files</h1>
+<p>Select one or more PDF files. Indexing will start automatically after upload.</p>
+
+<div class="card">
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="files" accept=".pdf" multiple required />
+        <br />
+        <button type="submit">Upload</button>
+    </form>
+
+    {% if message %}
+    <div class="message">{{ message }}</div>
+    {% endif %}
+
+    <div class="status" id="statusBox">
+        <strong>Indexing status:</strong>
+        <div id="statusText">
+            {% if status.running %}
+            Indexing in progress...
+            {% else %}
+            {{ status.last_message }}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    async function refreshStatus() {
+        try {
+            const res = await fetch("/api/status");
+            const data = await res.json();
+
+            const statusText = document.getElementById("statusText");
+            if (data.running) {
+                statusText.textContent = "Indexing in progress...";
+            } else {
+                statusText.textContent = data.last_message;
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    setInterval(refreshStatus, 3000);
+    refreshStatus();
+</script>
+</body>
+</html>
