@@ -68,19 +68,3 @@ python ingest.py
 ```
 
 5. Ask questions in the chat box
-
-## Notes
-
-- This is intentionally minimal.
-- It uses a local JSON file as the vector store.
-- Uploaded PDFs are saved to `data/`.
-- Indexed embeddings are saved to `vector_store/index.json`.
-- If you upload new PDFs, run `python ingest.py` again.
-
-## Next upgrades
-
-- switch JSON vector store to FAISS or Qdrant
-- add OCR for scanned PDFs
-- add streaming responses
-- add conversation memory
-- add hybrid search
